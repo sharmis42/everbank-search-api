@@ -51,12 +51,16 @@ public class SnowflakeService
         var response = await _http.SendAsync(request);
         var json = await response.Content.ReadAsStringAsync();
 
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"Snowflake returned {(int)response.StatusCode}: {json}");
+
         using var doc = JsonDocument.Parse(json);
 
+        if (!doc.RootElement.TryGetProperty("data", out var dataEl))
+            return [];
+
         // Result is in data[0][0] as a JSON string
-        var rawValue = doc.RootElement
-            .GetProperty("data")[0][0]
-            .GetString();
+        var rawValue = dataEl[0][0].GetString();
 
         if (string.IsNullOrEmpty(rawValue))
             return [];
