@@ -46,6 +46,7 @@ public class SnowflakeService
         request.Headers.Add("Authorization", $"Bearer {_pat}");
         request.Headers.Add("X-Snowflake-Authorization-Token-Type", "PROGRAMMATIC_ACCESS_TOKEN");
         request.Headers.Add("Accept", "application/json");
+        request.Headers.Add("User-Agent", "everbank-search-api/1.0");
         request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
         var response = await _http.SendAsync(request);
